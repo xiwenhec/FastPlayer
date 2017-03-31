@@ -10,7 +10,6 @@ import static android.media.AudioFormat.CHANNEL_OUT_STEREO;
  *
  * Created by Sivin on 2017/3/31.
  */
-
 public class SPlayer {
     static {
         System.loadLibrary("libsplayer");
