@@ -36,14 +36,14 @@ set_target_properties( libyuv_lib PROPERTIES IMPORTED_LOCATION ${lib_src_DIR}/li
 add_library(swscale-4_lib SHARED IMPORTED)
 set_target_properties( swscale-4_lib PROPERTIES IMPORTED_LOCATION ${lib_src_DIR}/libswscale-4.so)
 
-add_library(splayer SHARED sivin_player.c)
+add_library(fastplayer SHARED FastPlayer.c)
 
 find_library(log-lib log )
 
 
 
 target_link_libraries(
-                       splayer
+                       fastplayer
                        avcodec-57_lib
                        avdevice-57_lib
                        avfilter-6_lib

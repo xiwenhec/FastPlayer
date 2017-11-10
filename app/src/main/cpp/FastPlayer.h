@@ -2,8 +2,8 @@
 // Created by Sivin on 2017/3/10.
 //
 
-#ifndef FFMEGDEMO_SIVIN_PLAYER_H
-#define FFMEGDEMO_SIVIN_PLAYER_H
+#ifndef FFMEGDEMO_FAST_PLAYER_H
+#define FFMEGDEMO_FAST_PLAYER_H
 
 #include <android/log.h>
 #include <unistd.h>
@@ -14,8 +14,8 @@
 #include <jni.h>
 
 
-#define LOGI(FORMAT, ...) __android_log_print(ANDROID_LOG_INFO,"sivin",FORMAT,##__VA_ARGS__);
-#define LOGE(FORMAT, ...) __android_log_print(ANDROID_LOG_ERROR,"sivin",FORMAT,##__VA_ARGS__);
+#define LOGI(FORMAT, ...) __android_log_print(ANDROID_LOG_INFO,"fastplayer",FORMAT,##__VA_ARGS__);
+#define LOGE(FORMAT, ...) __android_log_print(ANDROID_LOG_ERROR,"fastplayer",FORMAT,##__VA_ARGS__);
 
 #define MAX_STREAM 3
 

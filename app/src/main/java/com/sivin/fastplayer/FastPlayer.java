@@ -1,4 +1,4 @@
-package com.sivin.sivinplayer;
+package com.sivin.fastplayer;
 
 import android.media.AudioFormat;
 import android.media.AudioManager;
@@ -10,7 +10,7 @@ import static android.media.AudioFormat.CHANNEL_OUT_STEREO;
  *
  * Created by Sivin on 2017/3/31.
  */
-public class SPlayer {
+public class FastPlayer {
     static {
         System.loadLibrary("libsplayer");
     }

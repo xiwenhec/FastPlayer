@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <libyuv.h>
 #include <libavutil/imgutils.h>
-#include "sivin_player.h"
+#include "FastPlayer.h"
 
 #define MAX_AUDIO_FRME_SIZE 48000 * 4
 
@@ -93,6 +93,7 @@ static int init_codec_context_type(struct _videoState *is, int index) {
         LOGE("%s", "解码器无法打开");
         return -1;
     }
+
     is->pCodecCtxArray[index] = pCodeCtx;
 
     return 0;
@@ -121,7 +122,7 @@ static int init_codec_context(struct _videoState *is) {
 }
 
 
-static void obtianVideoSize(struct _videoState *is) {
+static void obtainVideoSize(struct _videoState *is) {
 
     if (is->video_stream_index >= 0) {
         videoWidth = is->pCodecCtxArray[is->video_stream_index]->width;
@@ -198,7 +199,7 @@ void decode_audio_prepare(struct _videoState *is) {
 
 
 JNIEXPORT void JNICALL
-Java_com_sivin_sivinplayer_SPlayer_setDataResource(JNIEnv *env, jobject instance, jstring url_) {
+Java_com_sivin_fastplayer_FastPlayer_setDataResource(JNIEnv *env, jobject instance, jstring url_) {
     const char *inputStr = (*env)->GetStringUTFChars(env, url_, 0);
 
     is = malloc(sizeof(struct _videoState));
@@ -223,7 +224,7 @@ Java_com_sivin_sivinplayer_SPlayer_setDataResource(JNIEnv *env, jobject instance
     }
 
     //获取视频尺寸,并回调通知java层
-    obtianVideoSize(is);
+    obtainVideoSize(is);
 
     //释放资源
     (*env)->ReleaseStringUTFChars(env, url_, inputStr);
@@ -399,13 +400,13 @@ void *decode_audio(void *arg) {
 
 
 JNIEXPORT void JNICALL
-Java_com_sivin_sivinplayer_SPlayer_prepare(JNIEnv *env, jobject instance) {
+Java_com_sivin_fastplayer_FastPlayer_prepare(JNIEnv *env, jobject instance) {
     jni_audio_prepare(env, instance, is);
     decode_audio_prepare(is);
 }
 
 JNIEXPORT void JNICALL
-Java_com_sivin_sivinplayer_SPlayer_setSuface(JNIEnv *env, jobject instance, jobject suface) {
+Java_com_sivin_fastplayer_FastPlayer_setSuface(JNIEnv *env, jobject instance, jobject suface) {
     is->nativeWindow = ANativeWindow_fromSurface(env, suface);
 }
 
@@ -414,7 +415,7 @@ Java_com_sivin_sivinplayer_SPlayer_setSuface(JNIEnv *env, jobject instance, jobj
  * 开始解码播放
  */
 JNIEXPORT void JNICALL
-Java_com_sivin_sivinplayer_SPlayer_start(JNIEnv *env, jobject instance) {
+Java_com_sivin_fastplayer_FastPlayer_start(JNIEnv *env, jobject instance) {
 
     if (is->video_stream_index >= 0) {
         LOGE("%s", "创建视频解码线程");
