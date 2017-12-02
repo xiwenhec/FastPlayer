@@ -200,6 +200,7 @@ void decode_audio_prepare(struct _videoState *is) {
 
 JNIEXPORT void JNICALL
 Java_com_sivin_fastplayer_FastPlayer_setDataResource(JNIEnv *env, jobject instance, jstring url_) {
+
     const char *inputStr = (*env)->GetStringUTFChars(env, url_, 0);
 
     is = malloc(sizeof(struct _videoState));

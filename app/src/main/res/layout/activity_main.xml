@@ -5,11 +5,11 @@
     android:layout_height="match_parent"
     tools:context="com.sivin.fastplayer.MainActivity">
 
-    <TextView
-        android:id="@+id/sample_text"
+    <Button
+        android:id="@+id/id_player"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:text="播放"
         />
 
 </FrameLayout>

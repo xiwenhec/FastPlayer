@@ -11,9 +11,7 @@ import static android.media.AudioFormat.CHANNEL_OUT_STEREO;
  * Created by Sivin on 2017/3/31.
  */
 public class FastPlayer {
-    static {
-        System.loadLibrary("libsplayer");
-    }
+
 
     /**
      *设置播放视音频的url
