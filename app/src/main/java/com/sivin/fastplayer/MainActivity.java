@@ -13,6 +13,8 @@ public class MainActivity extends AppCompatActivity {
     private Button mPlayerBtn;
     private FastPlayer2 mPlayer;
 
+    private String path;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         mPlayerBtn = findViewById(R.id.id_player);
         mPlayer = new FastPlayer2();
 
-        final String path = Environment.getExternalStorageDirectory().getPath()+"/test/test.mp4";
+        path = Environment.getExternalStorageDirectory().getPath()+"/test/test.mp4";
 
         mPlayerBtn.setOnClickListener(new View.OnClickListener() {
             @Override

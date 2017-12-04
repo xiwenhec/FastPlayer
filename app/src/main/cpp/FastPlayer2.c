@@ -35,6 +35,7 @@ Java_com_sivin_fastplayer_FastPlayer2_setDataResource(JNIEnv *env, jobject insta
         LOGE("open %s failed: %s", url, buf);
         return;
     }
+
     //获取视频总时长(second)
     int64_t totalSec = ic->duration / AV_TIME_BASE;
     LOGE("totalSec %lld", totalSec);
@@ -63,12 +64,14 @@ Java_com_sivin_fastplayer_FastPlayer2_setDataResource(JNIEnv *env, jobject insta
 
 
     AVFrame *yuv = av_frame_alloc();
+    //解码出一帧视频
     int pFrameIndex = 0;
     //将原始数据读取到pkt中
     AVPacket *pkt = av_packet_alloc();
     while (av_read_frame(ic, pkt) >= 0){
         //如果是视频数据包
         if(pkt->stream_index == videoStream){
+
             ret = avcodec_send_packet(videoCtx,pkt);
             if(ret != 0){
                 av_packet_unref(pkt);
@@ -79,13 +82,17 @@ Java_com_sivin_fastplayer_FastPlayer2_setDataResource(JNIEnv *env, jobject insta
                 pFrameIndex ++;
             }
         }
+
         int pts = pkt->pts * r2d(ic->streams[pkt->stream_index]->time_base) * 1000;
-       // LOGE("pts = %d", pts);
+        // LOGE("pts = %d", pts);
         //释放包
         av_packet_unref(pkt);
     }
+
     av_packet_unref(pkt);
     avcodec_free_context(&videoCtx);
+    av_frame_free(&yuv);
     avformat_close_input(&ic);
+
     (*env)->ReleaseStringUTFChars(env, url_, url);
 }

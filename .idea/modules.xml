@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/SivinPlayer.iml" filepath="$PROJECT_DIR$/SivinPlayer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/FastPlayer.iml" filepath="$PROJECT_DIR$/.idea/FastPlayer.iml" />
+      <module fileurl="file://E:\github\FastPlayer\SivinPlayer.iml" filepath="E:\github\FastPlayer\SivinPlayer.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
