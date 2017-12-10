@@ -35,8 +35,6 @@ public class GLFrameRenderer implements Renderer {
 
     public GLFrameRenderer(GLSurfaceView surface) {
         mTargetSurface = surface;
-        mScreenWidth = 960;
-        mScreenHeight = 540;
     }
 
     @Override
@@ -59,7 +57,9 @@ public class GLFrameRenderer implements Renderer {
         synchronized (this) {
             if (y != null) {
                 // reset position, have to be done
-                changeGLViewport(gl);
+                if(mScaleChange){
+                    changeGLViewport(gl);
+                }
                 y.position(0);
                 u.position(0);
                 v.position(0);
@@ -77,7 +77,6 @@ public class GLFrameRenderer implements Renderer {
 
     private void changeGLViewport(GL10 gl) {
         mScaleChange = false;
-
         int offSetX = (int) (-mScreenWidth * (mScale-1) / 2);
         int offSetY = (int) (-mScreenHeight*(mScale-1)/2);
         int width = (int)(mScreenWidth * mScale);

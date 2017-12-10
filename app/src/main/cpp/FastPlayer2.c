@@ -1,5 +1,5 @@
 //
-// Created by Administrator on 2017/12/2.
+// Created by sivin on 2017/12/2.
 //
 #include <jni.h>
 #include <android/log.h>
@@ -24,7 +24,7 @@ static int min(int a, int b) {
 }
 
 
-void copyDecodeFrame(unsigned char *src, unsigned char *dist, int lineSize, int width, int height) {
+static void copyDecodeFrame(unsigned char *src, unsigned char *dist, int lineSize, int width, int height) {
     width = min(lineSize, width);
     for (int i = 0; i < height; i++) {
         memcpy(dist, src, width);
