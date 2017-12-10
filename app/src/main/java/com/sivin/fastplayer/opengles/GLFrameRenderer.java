@@ -46,7 +46,6 @@ public class GLFrameRenderer implements Renderer {
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        Log.e("onSurfaceChanged", "onSurfaceChanged: " + width + " height：" + height);
         mScreenWidth = width;
         mScreenHeight = height;
         GLES20.glViewport(0, 0, width, height);
@@ -140,7 +139,6 @@ public class GLFrameRenderer implements Renderer {
         // request to render
         mTargetSurface.requestRender();
     }
-
 
     public void scaleViewPort(float scale){
         synchronized (this) {
