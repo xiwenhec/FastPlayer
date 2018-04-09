@@ -12,31 +12,33 @@ set(lib_src_DIR ${CMAKE_SOURCE_DIR}/../jniLibs/${ANDROID_ABI})
 
 
 add_library(avcodec-57_lib SHARED IMPORTED)
-set_target_properties( avcodec-57_lib PROPERTIES IMPORTED_LOCATION ${lib_src_DIR}/libavcodec-57.so)
+set_target_properties( avcodec-57_lib PROPERTIES IMPORTED_LOCATION ${lib_src_DIR}/libavcodec.so)
 
-add_library(avdevice-57_lib SHARED IMPORTED)
-set_target_properties( avdevice-57_lib PROPERTIES IMPORTED_LOCATION ${lib_src_DIR}/libavdevice-57.so)
+#add_library(avdevice-57_lib SHARED IMPORTED)
+#set_target_properties( avdevice-57_lib PROPERTIES IMPORTED_LOCATION ${lib_src_DIR}/libavdevice.so)
 
 
 add_library(avfilter-6_lib SHARED IMPORTED)
-set_target_properties( avfilter-6_lib PROPERTIES IMPORTED_LOCATION ${lib_src_DIR}/libavfilter-6.so)
+set_target_properties( avfilter-6_lib PROPERTIES IMPORTED_LOCATION ${lib_src_DIR}/libavfilter.so)
 
 add_library(avformat-57_lib SHARED IMPORTED)
-set_target_properties( avformat-57_lib PROPERTIES IMPORTED_LOCATION ${lib_src_DIR}/libavformat-57.so)
+set_target_properties( avformat-57_lib PROPERTIES IMPORTED_LOCATION ${lib_src_DIR}/libavformat.so)
 
 add_library(avutil-55_lib SHARED IMPORTED)
-set_target_properties( avutil-55_lib PROPERTIES IMPORTED_LOCATION ${lib_src_DIR}/libavutil-55.so)
+set_target_properties( avutil-55_lib PROPERTIES IMPORTED_LOCATION ${lib_src_DIR}/libavutil.so)
 
 add_library(swresample-2_lib SHARED IMPORTED)
-set_target_properties( swresample-2_lib PROPERTIES IMPORTED_LOCATION ${lib_src_DIR}/libswresample-2.so)
+set_target_properties( swresample-2_lib PROPERTIES IMPORTED_LOCATION ${lib_src_DIR}/libswresample.so)
 
-add_library(libyuv_lib SHARED IMPORTED)
-set_target_properties( libyuv_lib PROPERTIES IMPORTED_LOCATION ${lib_src_DIR}/libyuv.so)
+#add_library(libyuv_lib SHARED IMPORTED)
+#set_target_properties( libyuv_lib PROPERTIES IMPORTED_LOCATION ${lib_src_DIR}/libyuv.so)
 
 add_library(swscale-4_lib SHARED IMPORTED)
-set_target_properties( swscale-4_lib PROPERTIES IMPORTED_LOCATION ${lib_src_DIR}/libswscale-4.so)
+set_target_properties( swscale-4_lib PROPERTIES IMPORTED_LOCATION ${lib_src_DIR}/libswscale.so)
 
-add_library(FastPlayer SHARED FastPlayer.c FastPlayer2.c)
+add_library(FastPlayer SHARED
+        #FastPlayer.c
+        FastPlayer2.c)
 
 find_library(log-lib log )
 
@@ -45,13 +47,11 @@ find_library(log-lib log )
 target_link_libraries(
                        FastPlayer
                        avcodec-57_lib
-                       avdevice-57_lib
                        avfilter-6_lib
                        avformat-57_lib
                        avutil-55_lib
                        swresample-2_lib
                        swscale-4_lib
-                       libyuv_lib
                        log
                        android
                         )

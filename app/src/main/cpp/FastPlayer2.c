@@ -5,6 +5,10 @@
 #include <android/log.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <libswscale/swscale.h>
+#include <libavformat/avformat.h>
+#include <libavutil/error.h>
+#include <libavutil/avutil.h>
 #include "libavformat/avformat.h"
 #include "libavutil/avutil.h"
 #include "libavcodec/avcodec.h"
@@ -24,6 +28,15 @@ static int min(int a, int b) {
 }
 
 
+/**
+ * FFmpeg 解码出来的Frame yuv数据里含有很多无用的信息.
+ *
+ * @param src
+ * @param dist
+ * @param lineSize
+ * @param width
+ * @param height
+ */
 static void copyDecodeFrame(unsigned char *src, unsigned char *dist, int lineSize, int width, int height) {
     width = min(lineSize, width);
     for (int i = 0; i < height; i++) {
@@ -38,6 +51,7 @@ Java_com_sivin_fastplayer_FastPlayer2_setDataResource(JNIEnv *env, jobject insta
 
     const char *url = (*env)->GetStringUTFChars(env, url_, 0);
     jclass renderCls = (*env)->GetObjectClass(env, instance);
+
     jmethodID updateDataId = (*env)->GetMethodID(env, renderCls, "nativeCallback", "(II[B[B[B)V");
     jmethodID updateSizeMethodId = (*env)->GetMethodID(env, renderCls, "onGetVideoSize", "(II)V");
 
@@ -48,6 +62,7 @@ Java_com_sivin_fastplayer_FastPlayer2_setDataResource(JNIEnv *env, jobject insta
 
     //获取封装格式上下文信息
     int ret = avformat_open_input(&ic, url, NULL, NULL);
+
 
     if (ret != 0) {
         char buf[1024] = {0};
@@ -84,8 +99,16 @@ Java_com_sivin_fastplayer_FastPlayer2_setDataResource(JNIEnv *env, jobject insta
 
     (*env)->CallVoidMethod(env,instance,updateSizeMethodId,pCodecCtx->width,pCodecCtx->height);
 
+
     AVFrame *yuv = av_frame_alloc();
     H264YUV_Frame yuvFrame;
+
+
+    int yWidth =  pCodecCtx->width;
+    int uvWidth = yWidth/2;
+    LOGE("format:%d",pCodecCtx->pix_fmt) ;
+
+
 
     int pFrameIndex = 0;
     //将原始数据读取到pkt中
@@ -101,8 +124,6 @@ Java_com_sivin_fastplayer_FastPlayer2_setDataResource(JNIEnv *env, jobject insta
             while (avcodec_receive_frame(pCodecCtx, yuv) == 0) {
                 LOGE("读取视频帧:%d", pFrameIndex);
                 pFrameIndex++;
-
-
                 unsigned int yDataLength =
                         (unsigned int) (pCodecCtx->height) * (min(yuv->linesize[0], pCodecCtx->width));
                 unsigned int uLength =
@@ -116,47 +137,45 @@ Java_com_sivin_fastplayer_FastPlayer2_setDataResource(JNIEnv *env, jobject insta
                 yuvFrame.uData.length = uLength;
                 yuvFrame.vData.length = vLength;
 
-                yuvFrame.yData.dataBufer = (unsigned char *) malloc(yDataLength);
-                yuvFrame.uData.dataBufer = (unsigned char *) malloc(uLength);
-                yuvFrame.vData.dataBufer = (unsigned char *) malloc(vLength);
+                yuvFrame.yData.dataBuffer = (unsigned char *) malloc(yDataLength);
+                yuvFrame.uData.dataBuffer = (unsigned char *) malloc(uLength);
+                yuvFrame.vData.dataBuffer = (unsigned char *) malloc(vLength);
 
 
-                copyDecodeFrame(yuv->data[0], yuvFrame.yData.dataBufer, yuv->linesize[0],
+                copyDecodeFrame(yuv->data[0], yuvFrame.yData.dataBuffer, yuv->linesize[0],
 
                                 pCodecCtx->width, pCodecCtx->height);
 
-                copyDecodeFrame(yuv->data[1], yuvFrame.uData.dataBufer, yuv->linesize[1],
+                copyDecodeFrame(yuv->data[1], yuvFrame.uData.dataBuffer, yuv->linesize[1],
                                 pCodecCtx->width / 2, pCodecCtx->height / 2);
 
-                copyDecodeFrame(yuv->data[2], yuvFrame.vData.dataBufer, yuv->linesize[2],
+                copyDecodeFrame(yuv->data[2], yuvFrame.vData.dataBuffer, yuv->linesize[2],
                                 pCodecCtx->width / 2, pCodecCtx->height / 2);
-
 
                 jbyteArray yArr = (*env)->NewByteArray(env, yuvFrame.yData.length);
                 (*env)->SetByteArrayRegion(env, yArr, 0, yuvFrame.yData.length,
-                                           (jbyte *) yuvFrame.yData.dataBufer);
+                                           (jbyte *) yuvFrame.yData.dataBuffer);
 
                 jbyteArray uArr = (*env)->NewByteArray(env, yuvFrame.uData.length);
                 (*env)->SetByteArrayRegion(env, uArr, 0, yuvFrame.uData.length,
-                                           (jbyte *) yuvFrame.uData.dataBufer);
+                                           (jbyte *) yuvFrame.uData.dataBuffer);
 
                 jbyteArray vArr = (*env)->NewByteArray(env, yuvFrame.vData.length);
                 (*env)->SetByteArrayRegion(env, vArr, 0, yuvFrame.vData.length,
-                                           (jbyte *) yuvFrame.vData.dataBufer);
+                                           (jbyte *) yuvFrame.vData.dataBuffer);
 
                 (*env)->CallVoidMethod(env, instance, updateDataId, pCodecCtx->width,
                                        pCodecCtx->height, yArr, uArr, vArr);
 
-
+                //释放LocalRef,这里能释放的原因是,CallVoidMethod方法在java层将数据复制了一份
+                //这里在释放的时候,不会影响到java层的渲染数据
                 (*env)->DeleteLocalRef(env, yArr);
                 (*env)->DeleteLocalRef(env, uArr);
                 (*env)->DeleteLocalRef(env, vArr);
-
-
-                free(yuvFrame.yData.dataBufer);
-                free(yuvFrame.uData.dataBufer);
-                free(yuvFrame.vData.dataBufer);
-
+                //释放内存数据
+                free(yuvFrame.yData.dataBuffer);
+                free(yuvFrame.uData.dataBuffer);
+                free(yuvFrame.vData.dataBuffer);
                 usleep(1000 * 40);
             }
         }

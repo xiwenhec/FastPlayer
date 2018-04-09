@@ -14,6 +14,7 @@ import static android.opengl.GLSurfaceView.RENDERMODE_WHEN_DIRTY;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "MainActivity";
+
     private Button mPlayerBtn;
     private Button mMagnifyBtn;
     private Button mShrinkBtn;
@@ -23,8 +24,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private GLSurfaceView mglView;
     private String mFilePath;
-
     private float scale = 1.0f;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,23 +38,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-
     private void initData() {
 
-       mFilePath = Environment.getExternalStorageDirectory().getPath()+"/test/test.mp4";
+        String fileName = "input";
+
+        mFilePath = String.format(Environment.getExternalStorageDirectory().getPath() + "/test/%s.mp4",fileName);
+
+
     }
 
 
     private void initView() {
+
+
         mPlayerBtn = findViewById(R.id.id_player);
         mMagnifyBtn = findViewById(R.id.id_magnify);
         mShrinkBtn = findViewById(R.id.id_shrink);
 
-       mPlayerBtn .setOnClickListener(this);
-       mMagnifyBtn.setOnClickListener(this);
-       mShrinkBtn .setOnClickListener(this);
-
-
+        mPlayerBtn.setOnClickListener(this);
+        mMagnifyBtn.setOnClickListener(this);
+        mShrinkBtn.setOnClickListener(this);
 
     }
 
@@ -61,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
 
-        switch (v.getId()){
+        switch (v.getId()) {
 
             case R.id.id_player:
                 startVideo();
@@ -69,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.id_magnify:
                 scale += 0.5f;
-                if(scale >5.0f){
+                if (scale > 5.0f) {
                     scale = 1.0f;
                 }
                 mRender.scaleViewPort(scale);

@@ -4,10 +4,14 @@
 
 #ifndef FASTPLAYER_H264DECODEDEFINE_H
 #define FASTPLAYER_H264DECODEDEFINE_H
+
 typedef struct H264FrameDef{
+
     unsigned int length;
-    unsigned char* dataBufer;
-}H264Frame;
+
+    unsigned char* dataBuffer;
+
+} H264Frame;
 
 typedef struct H264YUVDef{
 
@@ -16,13 +20,6 @@ typedef struct H264YUVDef{
     H264Frame       yData;
     H264Frame       uData;
     H264Frame       vData;
-
-
 }H264YUV_Frame;
-
-
-
-
-
 
 #endif //FASTPLAYER_H264DECODEDEFINE_H

@@ -1,6 +1,4 @@
 package com.sivin.fastplayer;
-
-import android.opengl.GLSurfaceView;
 import android.util.Log;
 
 import com.sivin.fastplayer.opengles.GLFrameRenderer;
@@ -33,10 +31,7 @@ public class FastPlayer2 {
         renderer.update(yData,uData,vData);
     }
 
-
     public void onGetVideoSize(int width ,int height){
         renderer.updateSize(width,height);
     }
-
-
 }
